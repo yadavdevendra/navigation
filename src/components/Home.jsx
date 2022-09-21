@@ -1,66 +1,72 @@
-import React from 'react'
-import { useState ,useEffect } from 'react';
+import React from "react";
+import { useState, useEffect } from "react";
 //import Button from "@mui/material/Button";
-import {Button} from "@mui/material"
+import { Button } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 export default function Home() {
-      const [data, setData] = useState([]);
-      const [searchdata, setSearchdata] = useState([]);
-      let navigate = useNavigate();
+  const [data, setData] = useState([]);
+  const [searchdata, setSearchdata] = useState([]);
 
-      useEffect(() => {
-        fetch(`https://jsonplaceholder.typicode.com/users`)
-          .then((resp) => resp.json())
-          .then((data) => {
-            const newdata1 = data.map((item) => {
-              const ph = phonemodify(item.phone);
-              return { ...item, phone: ph };
-            });
-            console.log(data);
-            setData(newdata1);
-            setSearchdata(newdata1);
-          });
-      }, []);
+  let navigate = useNavigate();
+  // let location = useLocation();
+  // console.log("state", location.state.adddata);
 
-        function handleDelete(id) {
-          const newdata = data.filter((item) => item.id !== id);
-          setData(newdata);
-        }
-        function handleFshow() {
-          setShow(true);
-        //   setName("");
-        //   setUserName("");
-        //   setPhone("");
-        //   setEmail("");
-        //   setCompanyname("");
-          setIsAddButton(true);
-        }
-        const Search = (value) => {
-          if (value == "") {
-            setData(searchdata);
-            return;
-          }
+  useEffect(() => {
+    const edata =JSON.parse(localStorage.getItem("data"));
+    
+    setData(edata);
+    console.log(("edite",edata));
+    setSearchdata(edata);
+  }, []);
 
-          const searchedItem = data?.filter((item) => {
-            if (item.username !== null && item.email !== null) {
-              return item.username.toLowerCase().indexOf(value.toLowerCase()) ==
-                -1
-                ? false
-                : true;
-            } else return false;
-          });
-          setData(searchedItem);
-        };
-        function phonemodify(phone) {
-          phone.slice(0, 13);
-          var val = phone
-            .split(" ")[0]
-            .split(/[\.\s\(\)-]/)
-            .join("");
-          var val1 = val.slice(0, 10);
-          return val1;
-        }
+  useEffect(() => {
+    if (location.state?.stop) return;
+    fetch(`https://jsonplaceholder.typicode.com/users`)
+      .then((resp) => resp.json())
+      .then((data) => {
+        const newdata1 = data.map((item) => {
+          const ph = phonemodify(item.phone);
+          return { ...item, phone: ph };
+        });
+        // console.log(data);
+        localStorage.setItem("data", JSON.stringify(data));
+        setData(newdata1);
+        setSearchdata(newdata1);
+      });
+  }, []);
+
+  function handleDelete(id) {
+    const newdata = data.filter((item) => item.id !== id);
+    setData(newdata);
+  }
+
+  const Search = (value) => {
+    if (value == "") {
+      setData(searchdata);
+      return;
+    }
+
+    const searchedItem = data?.filter((item) => {
+      if (item.username !== null && item.email !== null) {
+        return item.username.toLowerCase().indexOf(value.toLowerCase()) == -1
+          ? false
+          : true;
+      } else return false;
+    });
+    setData(searchedItem);
+  };
+  function phonemodify(phone) {
+    phone.slice(0, 13);
+    var val = phone
+      .split(" ")[0]
+      .split(/[\.\s\(\)-]/)
+      .join("");
+    var val1 = val.slice(0, 10);
+    return val1;
+  }
+
   return (
     <div>
       <div className="searchbar">
@@ -95,26 +101,27 @@ export default function Home() {
         ) : (
           true
         )}
+
         <tbody>
-          {data.map((data) => {
+          {data.map((item) => {
             return (
-              <tr key={data.id}>
-                <td>{data.id}</td>
-                <td>{data.name}</td>
-                <td>{data.username}</td>
-                <td>{data.phone}</td>
-                <td>{data.email}</td>
-                <td>{data.company.name}</td>
+              <tr key={item.id}>
+                <td>{item.id}</td>
+                <td>{item.name}</td>
+                <td>{item.username}</td>
+                <td>{item.phone}</td>
+                <td>{item.email}</td>
+                <td>{item.company.name}</td>
                 <td className="action">
                   <Button
                     className="edite"
                     onClick={() => {
-                      navigate(`/form/${data.id}`, {
+                      navigate(`/${item.id}`, {
                         state: "Edit User Detail",
                       });
                     }}
                   >
-                    Edite
+                    Edit
                   </Button>
                   {/* <Link
                     className="editebtn"
@@ -125,7 +132,7 @@ export default function Home() {
                   <Button
                     className="delete"
                     onClick={() => {
-                      handleDelete(data.id);
+                      handleDelete(item.id);
                     }}
                   >
                     Delete

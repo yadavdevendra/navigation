@@ -7,34 +7,55 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useState } from "react";
 import Alert from "@mui/material/Alert";
-import { useLocation } from "react-router-dom";
+import { json, Navigate, useLocation, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+// import Home from './Home'
 
 export default function Form() {
+  const [edata,setEdata ] = useState("")
   const [name, setName] = useState("");
-  const [userName, setUserName] = useState("");
+  const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [company, setCompany] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [isAddButton, setIsAddButton] = useState(true);
-
+  // const [isAddButton, setIsAddButton] = useState(true);
   const [successMessage, setSuccessMessage] = useState("");
   const { state } = useLocation();
-
-  console.log("state",state); 
+  const navigate = useNavigate();
+  const params = useParams()
+   let location = useLocation();
+  // console.log("saimee", params);
   
+  
+  React.useEffect(() => {
+    // if(edata){
+    //   console.log(params.id);
+      const items = JSON.parse(localStorage.getItem("data"));
+      const editedata = items.find((item) => item.id ===Number(params.id));
+      setName(editedata.name);
+      setUserName(editedata.username);
+      setPhone(editedata.phone);
+      setEmail(editedata.email);
+      setCompany(editedata.company.name);
+      setEdata(items);
+      // setIsAddButton(false);
+    // }
+
+    }, [])
+    
   let Regex =
     /^[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*$/gm;
   // let phoneRegex = /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$/;
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!name && !userName && !email && !phone && !company) {
+    if (!name && !username && !email && !phone && !company) {
       setErrorMessage("All field required");
     } else {
       if (!name) {
         setErrorMessage("firstname required");
       } else {
-        if (!userName) {
+        if (!username) {
           setErrorMessage("LastName  required");
         } else {
           if (!email.match(Regex)) {
@@ -64,6 +85,52 @@ export default function Form() {
       }
     }
   };
+  const Add = (e) => {
+    // e.preventDefault();
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+    const id = randomInt(11, 50);
+    var adddata = {
+      id,
+      name,
+      username,
+      phone,
+      email,
+      company: { name: company },
+    };
+    // console.log("newdata",adddata);
+
+    // setNewdata(adddata);
+    setName("");
+    setUserName("");
+    setPhone("");
+    setEmail("");
+    setCompany("");
+    // setShow(!show);
+
+      navigate("/", { state: {adddata ,stop:true}});
+
+  };
+function handleEdite(e){
+  // e.preventDefault()
+const neweditdata = edata.map((eitem)=>{
+if(eitem.id === Number(params.id)) {
+
+  return {name,
+    username,
+    phone,
+    email,
+    company: { name: company }}
+  }
+  return eitem
+})
+console.log(neweditdata);
+localStorage.setItem("data", JSON.stringify(neweditdata));
+setEdata(neweditdata)
+ navigate("/", { state: { neweditdata, stop: true } });
+}
+
 
   return (
     <Container component="main" maxWidth="xs">
@@ -98,7 +165,7 @@ export default function Form() {
             <Grid item xs={12} sm={6}>
               <TextField
                 value={name}
-                onChange={(e) => setFirstName(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
                 autoComplete="of"
                 name="firstName"
                 required
@@ -110,8 +177,8 @@ export default function Form() {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                value={userName}
-                onChange={(e) => setLastName(e.target.value)}
+                value={username}
+                onChange={(e) => setUserName(e.target.value)}
                 required
                 fullWidth
                 id="lastName"
@@ -159,26 +226,34 @@ export default function Form() {
               />
             </Grid>
           </Grid>
-          {isAddButton && (
+
+          {/* {(state )?
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              onClick={(e) => {
+                Add(e.target.value);
+              }}
             >
-              {state}
-            </Button>
-          )}
-          {!isAddButton && (
+            {state}
+            </Button> */}
+          
+ 
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              onClick={(e) => {
+                 handleEdite(e);
+
+              }}
             >
-              {state}
+             {/* {state} */}EDITE
             </Button>
-          )}
+
         </Box>
       </Box>
     </Container>
