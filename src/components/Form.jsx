@@ -7,11 +7,11 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useState } from "react";
 import Alert from "@mui/material/Alert";
-import { json, Navigate, useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 // import Home from './Home'
 
-export default function Form() {
+export default function Form({ title }) {
   const [edata, setEdata] = useState("");
   const [name, setName] = useState("");
   const [username, setUserName] = useState("");
@@ -19,27 +19,23 @@ export default function Form() {
   const [phone, setPhone] = useState("");
   const [company, setCompany] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  // const [isAddButton, setIsAddButton] = useState(true);
-  const [successMessage, setSuccessMessage] = useState("");
-  const { state } = useLocation();
   const navigate = useNavigate();
   const params = useParams();
-  let location = useLocation();
+  // console.log(state);
   // console.log("saimee", params);
 
   React.useEffect(() => {
-    // if(edata){
-    //   console.log(params.id);
+    // console.log("localstorage id find",editedata.id);
     const items = JSON.parse(localStorage.getItem("data"));
-    const editedata = items.find((item) => item.id === Number(params.id));
-    setName(editedata.name);
-    setUserName(editedata.username);
-    setPhone(editedata.phone);
-    setEmail(editedata.email);
-    setCompany(editedata.company.name);
     setEdata(items);
-    // setIsAddButton(false);
-    // }
+    if (title === "Edit User") {
+      const editedata = items.find((item) => item.id === Number(params.id));
+      setName(editedata.name);
+      setUserName(editedata.username);
+      setPhone(editedata.phone);
+      setEmail(editedata.email);
+      setCompany(editedata.company.name);
+    }
   }, []);
 
   let Regex =
@@ -67,24 +63,42 @@ export default function Form() {
               if (!company) {
                 setErrorMessage("Company name  required");
               } else {
-                const neweditdata = edata.map((eitem) => {
-                  if (eitem.id === Number(params.id)) {
-                    return {
-                      id: Number(params.id),
-                      name,
-                      username,
-                      phone,
-                      email,
-                      company: { name: company },
-                    };
-                  }
-                  return eitem;
-                });
-                // console.log(neweditdata);
-                localStorage.setItem("data", JSON.stringify(neweditdata));
+                if (title === "Edit User") {
+                  const neweditdata = edata?.map((eitem) => {
+                    if (eitem.id === Number(params.id)) {
+                      return {
+                        id: Number(params.id),
+                        name,
+                        username,
+                        phone,
+                        email,
+                        company: { name: company },
+                      };
+                    }
+                    return eitem;
+                  });
+                  localStorage.setItem("data", JSON.stringify(neweditdata));
 
-                setEdata(neweditdata);
-                navigate("/", { state: { neweditdata, stop: true } });
+                } else if (title === "Add User") {
+                   function randomInt(min, max) {
+                     return Math.floor(Math.random() * (max - min + 1) + min);
+                   }
+                   const id = randomInt(11, 50);
+                  const newUser = {
+                    id,
+                    name,
+                    username,
+                    email,
+                    phone,
+                    company: { name: company },
+                  };
+
+                  localStorage.setItem(
+                    "data",
+                    JSON.stringify([...edata, newUser])
+                  );
+                }
+                navigate("/", { state: { stop: true } });
               }
             }
           }
@@ -92,35 +106,6 @@ export default function Form() {
       }
     }
   };
-  const Add = (e) => {
-    // e.preventDefault();
-    function randomInt(min, max) {
-      return Math.floor(Math.random() * (max - min + 1) + min);
-    }
-    const id = randomInt(11, 50);
-    var adddata = {
-      id,
-      name,
-      username,
-      phone,
-      email,
-      company: { name: company },
-    };
-    // console.log("newdata",adddata);
-
-    // setNewdata(adddata);
-    setName("");
-    setUserName("");
-    setPhone("");
-    setEmail("");
-    setCompany("");
-    // setShow(!show);
-
-    navigate("/", { state: { adddata, stop: true } });
-  };
-  function handleEdite(e) {
-    handleSubmit(e);
-  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -133,20 +118,12 @@ export default function Form() {
         }}
       >
         <Typography component="h1" variant="h5">
-          Form Handling With Validations
+          {title} Form
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box component="form" noValidate sx={{ mt: 3 }}>
           {errorMessage ? (
             <Alert sx={{ marginBottom: "25px" }} severity="error">
               {errorMessage}
-            </Alert>
-          ) : (
-            ""
-          )}
-
-          {successMessage ? (
-            <Alert sx={{ marginBottom: "25px" }} severity="success">
-              {successMessage}
             </Alert>
           ) : (
             ""
@@ -217,30 +194,27 @@ export default function Form() {
             </Grid>
           </Grid>
 
-          {/* {(state )?
+          {title === "Add User" ? (
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              onClick={(e) => {
-                Add(e.target.value);
-              }}
+              onClick={handleSubmit}
             >
-            {state}
-            </Button> */}
-
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-            onClick={(e) => {
-              handleEdite(e);
-            }}
-          >
-            {/* {state} */}EDITE
-          </Button>
+              Add User
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              onClick={handleSubmit}
+            >
+              Edit User Detail
+            </Button>
+          )}
         </Box>
       </Box>
     </Container>

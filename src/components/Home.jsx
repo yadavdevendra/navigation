@@ -14,13 +14,15 @@ export default function Home() {
   // console.log("state", location.state);
 
   useEffect(() => {
-    const edata =JSON.parse(localStorage.getItem("data"));
-    
-    setData(edata);
+    if (location.state?.stop) {
+      const edata =JSON.parse(localStorage.getItem("data"));
+      console.log(edata);
+      setData(edata);
+      setSearchdata(edata);
+    }
     // console.log(("edite",edata));
-    setSearchdata(edata);
   }, []);
-
+console.log(location.state?.stop);
   useEffect(() => {
     if (location.state?.stop) return;
     fetch(`https://jsonplaceholder.typicode.com/users`)
@@ -40,6 +42,7 @@ export default function Home() {
 
   function handleDelete(id) {
     const newdata = data.filter((item) => item.id !== id);
+    localStorage.setItem("data", JSON.stringify(newdata))
     setData(newdata);
   }
 
@@ -81,7 +84,7 @@ export default function Home() {
         />
         <Button
           className="add"
-          onClick={() => navigate("/form", { state: "Add User Detail" })}
+          onClick={() => navigate("/form")}
         >
           Add user
         </Button>
@@ -118,7 +121,7 @@ export default function Home() {
                     className="edite"
                     onClick={() => {
                       navigate(`/${item.id}`, {
-                        state: "Edit User Detail",
+                        state: "Edit User Detail"
                       });
                     }}
                   >
