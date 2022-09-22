@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function Home() {
   const [data, setData] = useState([]);
@@ -12,7 +14,7 @@ export default function Home() {
   let navigate = useNavigate();
   let location = useLocation();
   // console.log("state", location.state);
-
+// Getting Data From Local Storage
   useEffect(() => {
     if (location.state?.stop) {
       const edata =JSON.parse(localStorage.getItem("data"));
@@ -22,9 +24,9 @@ export default function Home() {
     }
     // console.log(("edite",edata));
   }, []);
-console.log(location.state?.stop);
+  // Setting Data in Local Storage
   useEffect(() => {
-    if (location.state?.stop) return;
+    if (location.state?.stop) return;         
     fetch(`https://jsonplaceholder.typicode.com/users`)
       .then((resp) => resp.json())
       .then((data) => {
@@ -39,9 +41,9 @@ console.log(location.state?.stop);
         setSearchdata(newdata1);
       });
   }, []);
-
+// Delete Data from Table and Local Storage
   function handleDelete(id) {
-    const newdata = data.filter((item) => item.id !== id);
+    const newdata = data?.filter((item) => item.id !== id);
     localStorage.setItem("data", JSON.stringify(newdata))
     setData(newdata);
   }
@@ -84,7 +86,11 @@ console.log(location.state?.stop);
         />
         <Button
           className="add"
-          onClick={() => navigate("/form")}
+          onClick={() => {
+            navigate("/form", {
+              state: "Add User",
+            });
+          }}
         >
           Add user
         </Button>
@@ -121,25 +127,19 @@ console.log(location.state?.stop);
                     className="edite"
                     onClick={() => {
                       navigate(`/${item.id}`, {
-                        state: "Edit User Detail"
+                        state: "Edit User",
                       });
                     }}
                   >
-                    Edit
+                    <BorderColorIcon />
                   </Button>
-                  {/* <Link
-                    className="editebtn"
-                    to={(`/form/${data.id}`, { state: "Edit User Detail" })}
-                  >
-                    Edit
-                  </Link> */}
                   <Button
                     className="delete"
                     onClick={() => {
                       handleDelete(item.id);
                     }}
                   >
-                    Delete
+                    <DeleteIcon/>
                   </Button>
                 </td>
               </tr>

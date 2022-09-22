@@ -21,6 +21,7 @@ export default function Form({ title }) {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const params = useParams();
+  const {state} = useLocation();
   // console.log(state);
   // console.log("saimee", params);
 
@@ -28,7 +29,7 @@ export default function Form({ title }) {
     // console.log("localstorage id find",editedata.id);
     const items = JSON.parse(localStorage.getItem("data"));
     setEdata(items);
-    if (title === "Edit User") {
+    if (state === "Edit User") {
       const editedata = items.find((item) => item.id === Number(params.id));
       setName(editedata.name);
       setUserName(editedata.username);
@@ -63,7 +64,7 @@ export default function Form({ title }) {
               if (!company) {
                 setErrorMessage("Company name  required");
               } else {
-                if (title === "Edit User") {
+                if (state === "Edit User") {
                   const neweditdata = edata?.map((eitem) => {
                     if (eitem.id === Number(params.id)) {
                       return {
@@ -79,7 +80,7 @@ export default function Form({ title }) {
                   });
                   localStorage.setItem("data", JSON.stringify(neweditdata));
 
-                } else if (title === "Add User") {
+                } else if (state === "Add User") {
                    function randomInt(min, max) {
                      return Math.floor(Math.random() * (max - min + 1) + min);
                    }
@@ -118,7 +119,7 @@ export default function Form({ title }) {
         }}
       >
         <Typography component="h1" variant="h5">
-          {title} Form
+          {state} Form
         </Typography>
         <Box component="form" noValidate sx={{ mt: 3 }}>
           {errorMessage ? (
@@ -194,27 +195,27 @@ export default function Form({ title }) {
             </Grid>
           </Grid>
 
-          {title === "Add User" ? (
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={handleSubmit}
-            >
-              Add User
-            </Button>
-          ) : (
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={handleSubmit}
-            >
-              Edit User Detail
-            </Button>
-          )}
+          {/* {title === "Add User" ? ( */}
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            onClick={handleSubmit}
+          >
+            {state === "Add User" ? "Add" : "Edit"} User Detail
+          </Button>
+          {/* // ) : ( */}
+          {/* //   <Button 
+          //     type="submit"
+          //     fullWidth
+          //     variant="contained"
+          //     sx={{ mt: 3, mb: 2 }}
+          //     onClick={handleSubmit}
+          //   >
+          //     Edit User Detail
+          //   </Button>
+          // )}*/}
         </Box>
       </Box>
     </Container>
