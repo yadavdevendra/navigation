@@ -10,14 +10,14 @@ export default function Home() {
   const [searchdata, setSearchdata] = useState([]);
 
   let navigate = useNavigate();
-  // let location = useLocation();
-  // console.log("state", location.state.adddata);
+  let location = useLocation();
+  // console.log("state", location.state);
 
   useEffect(() => {
     const edata =JSON.parse(localStorage.getItem("data"));
     
     setData(edata);
-    console.log(("edite",edata));
+    // console.log(("edite",edata));
     setSearchdata(edata);
   }, []);
 
@@ -26,7 +26,7 @@ export default function Home() {
     fetch(`https://jsonplaceholder.typicode.com/users`)
       .then((resp) => resp.json())
       .then((data) => {
-        const newdata1 = data.map((item) => {
+        const newdata1 = data?.map((item) => {
           const ph = phonemodify(item.phone);
           return { ...item, phone: ph };
         });
@@ -86,7 +86,7 @@ export default function Home() {
         </Button>
       </div>
       <table className="table">
-        {data.length !== 0 ? (
+        {data?.length !== 0 ? (
           <thead>
             <tr>
               <th>Id </th>
@@ -103,7 +103,7 @@ export default function Home() {
         )}
 
         <tbody>
-          {data.map((item) => {
+          {data?.map((item) => {
             return (
               <tr key={item.id}>
                 <td>{item.id}</td>

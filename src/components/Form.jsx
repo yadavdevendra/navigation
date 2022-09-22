@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 // import Home from './Home'
 
 export default function Form() {
-  const [edata,setEdata ] = useState("")
+  const [edata, setEdata] = useState("");
   const [name, setName] = useState("");
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
@@ -23,27 +23,25 @@ export default function Form() {
   const [successMessage, setSuccessMessage] = useState("");
   const { state } = useLocation();
   const navigate = useNavigate();
-  const params = useParams()
-   let location = useLocation();
+  const params = useParams();
+  let location = useLocation();
   // console.log("saimee", params);
-  
-  
+
   React.useEffect(() => {
     // if(edata){
     //   console.log(params.id);
-      const items = JSON.parse(localStorage.getItem("data"));
-      const editedata = items.find((item) => item.id ===Number(params.id));
-      setName(editedata.name);
-      setUserName(editedata.username);
-      setPhone(editedata.phone);
-      setEmail(editedata.email);
-      setCompany(editedata.company.name);
-      setEdata(items);
-      // setIsAddButton(false);
+    const items = JSON.parse(localStorage.getItem("data"));
+    const editedata = items.find((item) => item.id === Number(params.id));
+    setName(editedata.name);
+    setUserName(editedata.username);
+    setPhone(editedata.phone);
+    setEmail(editedata.email);
+    setCompany(editedata.company.name);
+    setEdata(items);
+    // setIsAddButton(false);
     // }
+  }, []);
 
-    }, [])
-    
   let Regex =
     /^[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*$/gm;
   // let phoneRegex = /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$/;
@@ -53,10 +51,10 @@ export default function Form() {
       setErrorMessage("All field required");
     } else {
       if (!name) {
-        setErrorMessage("firstname required");
+        setErrorMessage("name required");
       } else {
         if (!username) {
-          setErrorMessage("LastName  required");
+          setErrorMessage("UserName  required");
         } else {
           if (!email.match(Regex)) {
             setErrorMessage("Email  required");
@@ -67,17 +65,24 @@ export default function Form() {
               if (!company) {
                 setErrorMessage("Company name  required");
               } else {
-                setErrorMessage(false);
-                setFirstName("");
-                setLastName("");
-                setEmail("");
-                setPhone("");
-                setCompany("");
-                setPromostions(false);
-                setSuccessMessage("Successfully Submit");
-                setTimeout(() => {
-                  setSuccessMessage("");
-                }, 2000);
+                const neweditdata = edata.map((eitem) => {
+                  if (eitem.id === Number(params.id)) {
+                    return {
+                      id: Number(params.id),
+                      name,
+                      username,
+                      phone,
+                      email,
+                      company: { name: company },
+                    };
+                  }
+                  return eitem;
+                });
+                // console.log(neweditdata);
+                localStorage.setItem("data", JSON.stringify(neweditdata));
+
+                setEdata(neweditdata);
+                navigate("/", { state: { neweditdata, stop: true } });
               }
             }
           }
@@ -109,28 +114,11 @@ export default function Form() {
     setCompany("");
     // setShow(!show);
 
-      navigate("/", { state: {adddata ,stop:true}});
-
+    navigate("/", { state: { adddata, stop: true } });
   };
-function handleEdite(e){
-  // e.preventDefault()
-const neweditdata = edata.map((eitem)=>{
-if(eitem.id === Number(params.id)) {
-
-  return {name,
-    username,
-    phone,
-    email,
-    company: { name: company }}
+  function handleEdite(e) {
+    handleSubmit(e);
   }
-  return eitem
-})
-console.log(neweditdata);
-localStorage.setItem("data", JSON.stringify(neweditdata));
-setEdata(neweditdata)
- navigate("/", { state: { neweditdata, stop: true } });
-}
-
 
   return (
     <Container component="main" maxWidth="xs">
@@ -239,21 +227,18 @@ setEdata(neweditdata)
             >
             {state}
             </Button> */}
-          
- 
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={(e) => {
-                 handleEdite(e);
 
-              }}
-            >
-             {/* {state} */}EDITE
-            </Button>
-
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            onClick={(e) => {
+              handleEdite(e);
+            }}
+          >
+            {/* {state} */}EDITE
+          </Button>
         </Box>
       </Box>
     </Container>
