@@ -31,8 +31,9 @@ export default function Home() {
           return { ...item, phone: ph };
         });
         // console.log(data);
-        localStorage.setItem("data", JSON.stringify(data));
+        
         setData(newdata1);
+        localStorage.setItem("data", JSON.stringify(newdata1));
         setSearchdata(newdata1);
       });
   }, []);

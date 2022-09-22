@@ -59,7 +59,9 @@ export default function Form() {
           if (!email.match(Regex)) {
             setErrorMessage("Email  required");
           } else {
-            if (!phone.match(/^[789]\d{9}$/)) {
+            if (
+              !phone.match(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/)
+            ) {
               setErrorMessage("phone only get the number 10 digits");
             } else {
               if (!company) {
