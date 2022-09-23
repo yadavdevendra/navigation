@@ -45,35 +45,34 @@ export default function Form({ title }) {
     }
   }, []);
 
-  let Regex =
-    /^[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*$/gm;
+  let Regex = /(\<|^)[\w\d._%+-]+@(?:[\w\d-]+\.)+(\w{2,})(\>|$)/g;
   // let phoneRegex = /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$/;
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!name && !username && !email && !phone && !company) {
-       setErrorMessage("All field required");
+      setErrorMessage("All field required");
     } else {
       setErrorMessage("");
       if (!name) {
-         setNameMessage("name required");
+        setNameMessage("name required");
       } else {
         setNameMessage("");
         if (!username) {
-           setUserNameMessage("UserName  required");
+          setUserNameMessage("UserName  required");
         } else {
           setUserNameMessage("");
           if (!email.match(Regex)) {
-             setEmailMessage("Email  required");
+            setEmailMessage("Email  required");
           } else {
             setEmailMessage("");
             if (
               !phone.match(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/)
             ) {
-               setPhoneMessage("phone only get the number 10 digits");
+              setPhoneMessage("phone only get the number 10 digits");
             } else {
               setPhoneMessage("");
               if (!company) {
-                 setCompanyMessage("Company name  required");
+                setCompanyMessage("Company name  required");
               } else {
                 setCompanyMessage("");
                 if (state === "Edit User") {
@@ -166,7 +165,7 @@ export default function Form({ title }) {
                 autoComplete="of"
               />
             </Grid>
-            <span>{(nameMessage)?true:userNameMessage}</span>
+            <span>{nameMessage ? true : userNameMessage}</span>
             <Grid item xs={12}>
               <TextField
                 value={email}
