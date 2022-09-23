@@ -45,6 +45,7 @@ export default function Form({ title }) {
   }, []);
 
  let Regex = /(\<|^)[\w\d._%+-]+@(?:[\w\d-]+\.)+(\w{2,})(\>|$)/g;
+ let reg = /^\d{10}$/;
   function handlename(val) {
     if (val == "") {
       setNameMessage("please fill the valid 'Name'");
@@ -79,7 +80,7 @@ export default function Form({ title }) {
       setPhoneMessage("please fill the valid 'Phone'");
       return true;
     }
-    if (!phone.match(/^([0-9]{9})$/)) {
+    if (!val.match(reg)) {
       setPhoneMessage("phone only get the  10 digits number");
       return true;
     }
@@ -154,7 +155,7 @@ export default function Form({ title }) {
         <Typography component="h1" variant="h5">
           {state} Form
         </Typography>
-        <Box sx={{ mt: 3 }} component="form" onSubmit={handleSubmit}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
