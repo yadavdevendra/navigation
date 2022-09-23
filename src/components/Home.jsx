@@ -18,7 +18,7 @@ export default function Home() {
   useEffect(() => {
     if (location.state?.stop) {
       const edata =JSON.parse(localStorage.getItem("data"));
-      console.log(edata);
+      console.table(edata);
       setData(edata);
       setSearchdata(edata);
     }
@@ -139,7 +139,7 @@ export default function Home() {
                       handleDelete(item.id);
                     }}
                   >
-                    <DeleteIcon/>
+                    <DeleteIcon />
                   </Button>
                 </td>
               </tr>

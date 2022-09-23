@@ -45,78 +45,102 @@ export default function Form({ title }) {
     }
   }, []);
 
-  let Regex = /(\<|^)[\w\d._%+-]+@(?:[\w\d-]+\.)+(\w{2,})(\>|$)/g;
-  // let phoneRegex = /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$/;
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!name && !username && !email && !phone && !company) {
-      setErrorMessage("All field required");
-    } else {
-      setErrorMessage("");
-      if (!name) {
-        setNameMessage("name required");
-      } else {
-        setNameMessage("");
-        if (!username) {
-          setUserNameMessage("UserName  required");
-        } else {
-          setUserNameMessage("");
-          if (!email.match(Regex)) {
-            setEmailMessage("Email  required");
-          } else {
-            setEmailMessage("");
-            if (
-              !phone.match(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/)
-            ) {
-              setPhoneMessage("phone only get the number 10 digits");
-            } else {
-              setPhoneMessage("");
-              if (!company) {
-                setCompanyMessage("Company name  required");
-              } else {
-                setCompanyMessage("");
-                if (state === "Edit User") {
-                  const neweditdata = edata?.map((eitem) => {
-                    if (eitem.id === Number(params.id)) {
-                      return {
-                        id: Number(params.id),
-                        name,
-                        username,
-                        phone,
-                        email,
-                        company: { name: company },
-                      };
-                    }
-                    return eitem;
-                  });
-                  localStorage.setItem("data", JSON.stringify(neweditdata));
-                } else if (state === "Add User") {
-                  function randomInt(min, max) {
-                    return Math.floor(Math.random() * (max - min + 1) + min);
-                  }
-                  const id = randomInt(11, 50);
-                  const newUser = {
-                    id,
-                    name,
-                    username,
-                    email,
-                    phone,
-                    company: { name: company },
-                  };
-
-                  localStorage.setItem(
-                    "data",
-                    JSON.stringify([...edata, newUser])
-                  );
-                }
-                navigate("/", { state: { stop: true } });
-              }
-            }
-          }
-        }
-      }
+ let Regex = /(\<|^)[\w\d._%+-]+@(?:[\w\d-]+\.)+(\w{2,})(\>|$)/g;
+  function handlename(val) {
+    if (val == "") {
+      setNameMessage("please fill the valid name");
+      return true;
     }
-  };
+    setNameMessage("");
+    return false;
+  }
+  function handleusername(val) {
+    if (val == "") {
+      setUserNameMessage("please fill the valid name");
+      return true;
+    }
+    setUserNameMessage("");
+    return false;
+  }
+
+  function handleemail(val) {
+    if (val == "") {
+      setEmailMessage("please fill the valid name");
+      return true;
+    }
+   if(!val.match(Regex)){
+      setEmailMessage("please fill the valid name");
+      return true;
+   }
+   setEmailMessage("");
+   return false;
+  }
+  function handlephone(val) {
+    if (val == "") {
+      setPhoneMessage("please fill the valid name");
+      return true;
+    }
+    if (!phone.match(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/)) {
+      setPhoneMessage("phone only get the number 10 digits");
+      return true;
+    }
+    setPhoneMessage("");
+    return false;
+  }
+  function handlecompany(val) {
+    if (val == "") {
+      setCompanyMessage("please fill the valid name");
+      return true;
+    }
+    setCompanyMessage("");
+    return false;
+  }
+  function handleSubmit() {
+    if (
+      nameMessage &&
+      userNameMessage &&
+      emailMessage &&
+      phoneMessage &&
+      companyMessage
+    )
+      return;
+ 
+    if (state === "Edit User") {
+      const neweditdata = edata?.map((eitem) => {
+        if (eitem.id === Number(params.id)) {
+          return {
+            id: Number(params.id),
+            name,
+            username,
+            phone,
+            email,
+            company: { name: company },
+          };
+        }
+        return eitem;
+      });
+         
+      localStorage.setItem("data", JSON.stringify(neweditdata));
+         
+    } else if (state === "Add User") {
+      function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+      }
+      const id = randomInt(11, 50);
+      const newUser = {
+        id,
+        name,
+        username,
+        email,
+        phone,
+        company: { name: company },
+      };
+
+      localStorage.setItem("data", JSON.stringify([...edata, newUser]));
+    }
+  // }
+    navigate("/", { state: { stop: true } });
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -131,19 +155,15 @@ export default function Form({ title }) {
         <Typography component="h1" variant="h5">
           {state} Form
         </Typography>
-        <Box component="form" noValidate sx={{ mt: 3 }}>
-          {errorMessage ? (
-            <Alert sx={{ marginBottom: "25px" }} severity="error">
-              {errorMessage}
-            </Alert>
-          ) : (
-            ""
-          )}
+        <Box sx={{ mt: 3 }} component="form" onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  handlename(e.target.value);
+                }}
                 autoComplete="of"
                 name="firstName"
                 required
@@ -153,10 +173,14 @@ export default function Form({ title }) {
                 autoFocus
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <span>{nameMessage}</span>
+            <Grid item xs={12}>
               <TextField
                 value={username}
-                onChange={(e) => setUserName(e.target.value)}
+                onChange={(e) => {
+                  setUserName(e.target.value);
+                  handleusername(e.target.value);
+                }}
                 required
                 fullWidth
                 id="username"
@@ -165,11 +189,14 @@ export default function Form({ title }) {
                 autoComplete="of"
               />
             </Grid>
-            <span>{nameMessage ? true : userNameMessage}</span>
+            <span>{userNameMessage}</span>
             <Grid item xs={12}>
               <TextField
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  handleemail(e.target.value);
+                }}
                 required
                 fullWidth
                 id="email"
@@ -182,7 +209,10 @@ export default function Form({ title }) {
             <Grid item xs={12}>
               <TextField
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => {
+                  setPhone(e.target.value);
+                  handlephone(e.target.value);
+                }}
                 required
                 fullWidth
                 name="phone"
@@ -196,7 +226,10 @@ export default function Form({ title }) {
             <Grid item xs={12}>
               <TextField
                 value={company}
-                onChange={(e) => setCompany(e.target.value)}
+                onChange={(e) => {
+                  setCompany(e.target.value);
+                  handlecompany(e.target.value);
+                }}
                 required
                 fullWidth
                 name="company"
@@ -209,27 +242,14 @@ export default function Form({ title }) {
             <span>{companyMessage}</span>
           </Grid>
 
-          {/* {title === "Add User" ? ( */}
           <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            onClick={handleSubmit}
           >
             {state === "Add User" ? "Add" : "Edit"} User Detail
           </Button>
-          {/* // ) : ( */}
-          {/* //   <Button 
-          //     type="submit"
-          //     fullWidth
-          //     variant="contained"
-          //     sx={{ mt: 3, mb: 2 }}
-          //     onClick={handleSubmit}
-          //   >
-          //     Edit User Detail
-          //   </Button>
-          // )}*/}
         </Box>
       </Box>
     </Container>

@@ -6,7 +6,7 @@
 
 .table {
   margin-top: 20px;
-  background-color: antiquewhite;;
+  background-color: antiquewhite;
   margin-left: 250px;
   max-width: max-content;
   border-radius: 15px;
@@ -14,28 +14,37 @@
 .action {
   display: flex;
 }
-input{
+input {
   margin-top: 10px;
 }
-button{
+button {
   margin-top: 10px;
 }
-.searchbar{
+.searchbar {
+  text-align: center;
   display: flex;
-  margin-left: 300px;
+  margin-left: 250px;
+  border-radius: 15px;
+  width: 940px;
+  justify-content: space-between;
+  margin-top: 20px;
+ 
+}
+.search {
+  border: 1px solid black;
+  width: 750px;
+  height: 3rem;
+  border-radius: 15px;
 
 }
-.search{
-  border: 1px solid black;
-  width: 550px;
-  height: 2.5rem;
-  border-radius: 15px;
+.add {
+font-size: larger;
+font-weight: bold;
+height:4rem;
+
+
 }
-.add{
-   margin-left: 150px;
-  border-radius: 12px;
-}
-span{
-margin-left: 3rem;
+span {
+  margin-left: 3rem;
   color: red;
 }
