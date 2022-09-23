@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
-import BorderColorIcon from "@mui/icons-material/BorderColor";
+import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function Home() {
@@ -131,7 +131,7 @@ export default function Home() {
                       });
                     }}
                   >
-                    <BorderColorIcon />
+                    <EditIcon />
                   </Button>
                   <Button
                     className="delete"

@@ -6,7 +6,6 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useState } from "react";
-import Alert from "@mui/material/Alert";
 import { useLocation, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 // import Home from './Home'
@@ -48,7 +47,7 @@ export default function Form({ title }) {
  let Regex = /(\<|^)[\w\d._%+-]+@(?:[\w\d-]+\.)+(\w{2,})(\>|$)/g;
   function handlename(val) {
     if (val == "") {
-      setNameMessage("please fill the valid name");
+      setNameMessage("please fill the valid 'Name'");
       return true;
     }
     setNameMessage("");
@@ -56,7 +55,7 @@ export default function Form({ title }) {
   }
   function handleusername(val) {
     if (val == "") {
-      setUserNameMessage("please fill the valid name");
+      setUserNameMessage("please fill the valid 'UserName'");
       return true;
     }
     setUserNameMessage("");
@@ -65,11 +64,11 @@ export default function Form({ title }) {
 
   function handleemail(val) {
     if (val == "") {
-      setEmailMessage("please fill the valid name");
+      setEmailMessage("please fill the valid 'Email'");
       return true;
     }
    if(!val.match(Regex)){
-      setEmailMessage("please fill the valid name");
+      setEmailMessage("please fill the valid like'abc@gmail.com'");
       return true;
    }
    setEmailMessage("");
@@ -77,11 +76,11 @@ export default function Form({ title }) {
   }
   function handlephone(val) {
     if (val == "") {
-      setPhoneMessage("please fill the valid name");
+      setPhoneMessage("please fill the valid 'Phone'");
       return true;
     }
-    if (!phone.match(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/)) {
-      setPhoneMessage("phone only get the number 10 digits");
+    if (!phone.match(/^([0-9]{9})$/)) {
+      setPhoneMessage("phone only get the  10 digits number");
       return true;
     }
     setPhoneMessage("");
@@ -89,7 +88,7 @@ export default function Form({ title }) {
   }
   function handlecompany(val) {
     if (val == "") {
-      setCompanyMessage("please fill the valid name");
+      setCompanyMessage("please fill the valid 'companyName");
       return true;
     }
     setCompanyMessage("");
