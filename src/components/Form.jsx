@@ -18,10 +18,16 @@ export default function Form({ title }) {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [company, setCompany] = useState("");
+  // error  Message
   const [errorMessage, setErrorMessage] = useState("");
+  const [nameMessage, setNameMessage] = useState("");
+  const [userNameMessage, setUserNameMessage] = useState("");
+  const [emailMessage, setEmailMessage] = useState("");
+  const [phoneMessage, setPhoneMessage] = useState("");
+  const [companyMessage, setCompanyMessage] = useState("");
   const navigate = useNavigate();
   const params = useParams();
-  const {state} = useLocation();
+  const { state } = useLocation();
   // console.log(state);
   // console.log("saimee", params);
 
@@ -45,25 +51,31 @@ export default function Form({ title }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!name && !username && !email && !phone && !company) {
-      setErrorMessage("All field required");
+       setErrorMessage("All field required");
     } else {
+      setErrorMessage("");
       if (!name) {
-        setErrorMessage("name required");
+         setNameMessage("name required");
       } else {
+        setNameMessage("");
         if (!username) {
-          setErrorMessage("UserName  required");
+           setUserNameMessage("UserName  required");
         } else {
+          setUserNameMessage("");
           if (!email.match(Regex)) {
-            setErrorMessage("Email  required");
+             setEmailMessage("Email  required");
           } else {
+            setEmailMessage("");
             if (
               !phone.match(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/)
             ) {
-              setErrorMessage("phone only get the number 10 digits");
+               setPhoneMessage("phone only get the number 10 digits");
             } else {
+              setPhoneMessage("");
               if (!company) {
-                setErrorMessage("Company name  required");
+                 setCompanyMessage("Company name  required");
               } else {
+                setCompanyMessage("");
                 if (state === "Edit User") {
                   const neweditdata = edata?.map((eitem) => {
                     if (eitem.id === Number(params.id)) {
@@ -79,12 +91,11 @@ export default function Form({ title }) {
                     return eitem;
                   });
                   localStorage.setItem("data", JSON.stringify(neweditdata));
-
                 } else if (state === "Add User") {
-                   function randomInt(min, max) {
-                     return Math.floor(Math.random() * (max - min + 1) + min);
-                   }
-                   const id = randomInt(11, 50);
+                  function randomInt(min, max) {
+                    return Math.floor(Math.random() * (max - min + 1) + min);
+                  }
+                  const id = randomInt(11, 50);
                   const newUser = {
                     id,
                     name,
@@ -149,12 +160,13 @@ export default function Form({ title }) {
                 onChange={(e) => setUserName(e.target.value)}
                 required
                 fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
+                id="username"
+                label="User Name"
+                name="username"
                 autoComplete="of"
               />
             </Grid>
+            <span>{(nameMessage)?true:userNameMessage}</span>
             <Grid item xs={12}>
               <TextField
                 value={email}
@@ -167,6 +179,7 @@ export default function Form({ title }) {
                 autoComplete="off"
               />
             </Grid>
+            <span>{emailMessage}</span>
             <Grid item xs={12}>
               <TextField
                 value={phone}
@@ -180,6 +193,7 @@ export default function Form({ title }) {
                 autoComplete="off"
               />
             </Grid>
+            <span>{phoneMessage}</span>
             <Grid item xs={12}>
               <TextField
                 value={company}
@@ -193,6 +207,7 @@ export default function Form({ title }) {
                 autoComplete="off"
               />
             </Grid>
+            <span>{companyMessage}</span>
           </Grid>
 
           {/* {title === "Add User" ? ( */}

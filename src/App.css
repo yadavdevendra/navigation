@@ -32,9 +32,10 @@ button{
   border-radius: 15px;
 }
 .add{
-   margin-left: 110px;
+   margin-left: 150px;
   border-radius: 12px;
 }
 span{
+margin-left: 3rem;
   color: red;
 }
