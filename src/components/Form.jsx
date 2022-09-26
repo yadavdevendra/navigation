@@ -24,6 +24,7 @@ export default function Form({ title }) {
   const [emailMessage, setEmailMessage] = useState("");
   const [phoneMessage, setPhoneMessage] = useState("");
   const [companyMessage, setCompanyMessage] = useState("");
+    const [error, setError] = useState(true);
   const navigate = useNavigate();
   const params = useParams();
   const { state } = useLocation();
@@ -49,6 +50,7 @@ export default function Form({ title }) {
   function handlename(val) {
     if (val == "") {
       setNameMessage("please fill the valid 'Name'");
+      error(true)
       return true;
     }
     setNameMessage("");
@@ -57,6 +59,7 @@ export default function Form({ title }) {
   function handleusername(val) {
     if (val == "") {
       setUserNameMessage("please fill the valid 'UserName'");
+      error(true);
       return true;
     }
     setUserNameMessage("");
@@ -157,7 +160,7 @@ export default function Form({ title }) {
         </Typography>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 value={name}
                 onChange={(e) => {
@@ -173,8 +176,7 @@ export default function Form({ title }) {
                 autoFocus
               />
             </Grid>
-            <span>{nameMessage}</span>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 value={username}
                 onChange={(e) => {
@@ -189,7 +191,7 @@ export default function Form({ title }) {
                 autoComplete="of"
               />
             </Grid>
-            <span>{userNameMessage}</span>
+            {(nameMessage)? <span>{nameMessage}</span>:<span>{userNameMessage}</span>}
             <Grid item xs={12}>
               <TextField
                 value={email}
